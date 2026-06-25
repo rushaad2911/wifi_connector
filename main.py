@@ -138,23 +138,21 @@ def stop_hotspot():
 if wifi_connected():
     print("Already connected to Wi-Fi.")
     exit()
-else:
-    while True:
-        print("Scanning Wi-Fi...")
-        scaned_networks = get_wifi_networks()
 
-        print("Starting hotspot...")
-        start_hotspot()
+    print("Scanning Wi-Fi...")
+    scaned_networks = get_wifi_networks()
 
-        WifiServer.networks = scaned_networks
+    print("Starting hotspot...")
+    start_hotspot()
 
-        server = HTTPServer(("0.0.0.0", 8080), WifiServer)
+    WifiServer.networks = scaned_networks
 
-        print("Open http://192.168.50.1:8080")
+    server = HTTPServer(("0.0.0.0", 8080), WifiServer)
 
-        server.serve_forever()
+    print("Open http://192.168.50.1:8080")
 
-        stop_hotspot()
+    server.serve_forever()
 
-        print("Finished")
-        exit()
+    stop_hotspot()
+
+    print("Finished")
