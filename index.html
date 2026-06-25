@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>WiFi Setup</title>
+
+<style>
+
+body{
+    font-family:Arial;
+    max-width:450px;
+    margin:auto;
+    margin-top:40px;
+}
+
+input,
+select,
+button{
+
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+}
+
+#customSSID{
+    display:none;
+}
+
+</style>
+
+<script>
+
+async function loadNetworks(){
+
+    let response = await fetch("/scan");
+
+    let networks = await response.json();
+
+    let select = document.getElementById("ssid");
+
+    select.innerHTML = "";
+
+    networks.forEach(network=>{
+
+        let option = document.createElement("option");
+
+        option.value = network.ssid;
+
+        option.text =
+            network.ssid +
+            " (" +
+            network.signal +
+            "%)";
+
+        select.appendChild(option);
+
+    });
+
+    let other = document.createElement("option");
+
+    other.value="__CUSTOM__";
+
+    other.text="Other / Hidden Network";
+
+    select.appendChild(other);
+
+}
+
+function changeSSID(){
+
+    let value =
+        document.getElementById("ssid").value;
+
+    document.getElementById("customSSID").style.display =
+        value=="__CUSTOM__"
+        ? "block"
+        : "none";
+
+}
+
+window.onload=loadNetworks;
+
+</script>
+
+</head>
+
+<body>
+
+<h2>WiFi Setup</h2>
+
+<form method="POST" action="/connect">
+
+<label>Network</label>
+
+<select
+id="ssid"
+name="ssid"
+onchange="changeSSID()">
+</select>
+
+<input
+id="customSSID"
+type="text"
+name="custom_ssid"
+placeholder="Hidden SSID">
+
+<label>Password</label>
+
+<input
+type="password"
+name="password">
+
+<button>
+Connect
+</button>
+
+</form>
+
+</body>
+
+</html>
